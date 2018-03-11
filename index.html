@@ -114,7 +114,7 @@
         <p class="lead">
           The seed is set to 1 on page load. Set it to a seed you want, OR press the Random Seed button to generate a random seed and then run the program.
           <br/> 
-          The arrays that contain the list of names and the group sizes are hardcoded in the file.  Edit them to suit your needs.
+          The pregenerated classes on the page are hardcode into the file. Feel free to edit the page to suit your needs.
         </p>
         <hr class="my-4"/>
         <form name="seedForm" id="seedForm">
@@ -134,11 +134,11 @@
       <div>
         <form id="classForm" name="classForm">
           <div>Class Name</div>
-          <input name="className" class="form-control" type="text" placeholder="Class Name"/>
+          <input name="className" class="form-control" type="text" placeholder="Be creative!"/>
           <div>Group Size</div>
           <input name="groupSize" class="form-control" type="number" value="4"/>
-          <div>Name List (Please seperate each name by a comma</div>
-          <textarea name="classList" class="form-control" placeholder="Name List, please separate names by commas"></textarea>
+          <div>Name List</div>
+          <textarea name="classList" class="form-control" placeholder="Please separate names by commas.  Each name will be trimmed and blank names will be culled."></textarea>
           <button type="submit" class="btn btn-primary">Add Class!</button>
         </form>
       </div>
