@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  
+  <!-- Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <title> Split the Groups! </title>
+
+  <style>
+      /* Initial Settings */
+      body{
+        font-family: "Montserrat", sans-serif;
+      }
+      .gDiv {
+        float: left;
+        margin: 20px;
+      }
+      .clearfix{
+        overflow: auto;
+      }
+      .clearfix:after {
+        content: "";
+        clear: both;
+        display: table;
+      }
+
+      /* Main Header Settings */
+      .jumbotron{
+        background-image: linear-gradient(to right top, #042e25, #035e4a, #0a9371);
+        text-align: center;
+        color:white;
+      }
+
+      .jumbotron h1{
+        text-transform: uppercase;
+        font-size: 40px;
+        margin:0 0 3.5% 0;
+      }
+
+      .jumbotron h2{
+        text-transform: uppercase;
+        font-size: 28px;
+        margin-bottom: 1.5%;
+      }
+
+      .jumbotron p{
+        font-size: 16px;
+        width:90%;
+        margin: 0 5%;
+        line-height: 30px;
+      }
+
+      .jumbotron input{
+        width: 40%;
+        margin: 0 auto;
+        margin-bottom: 2%;
+      }
+
+      .jumbotron input[type="checkbox"] {
+        width: initial;
+        margin-top: .3rem;
+        margin-left: -1.25rem;
+      }
+
+      .jumbotron button{
+        background: #042E25;
+        color:white;
+        transition: .2s ease-in-out;
+        border:none;
+      }
+
+      .jumbotron button:hover{
+        color:#042E25;
+        background:white;
+        transition: .4s ease-in-out;
+        border:none;
+        
+      }
+
+
+
+      /* Generator Dump Settings */
+      .generator-dump{
+        text-align: center;
+        width: 90%;
+        margin:2% 5% 5% 5%;
+      }
+
+      .generator-dump h2{
+        margin:1.5%;
+      }
+
+  </style>
+
+</head>
+<body>
+
+  <!-- Main Header -->
+  <section class="main-header">
+    <div class="jumbotron">
+      <h1 class="display-4">Random Group Generator</h1>
+      <div>
+        <p class="lead">
+          The seed is set to 1 on page load. Set it to a seed you want, OR press the Random Seed button to generate a random seed and then run the program.
+          <br/> 
+          The arrays that contain the list of names and the group sizes are hardcoded in the file.  Edit them to suit your needs.
+        </p>
+        <hr class="my-4"/>
+        <form name="seedForm" id="seedForm">
+          <div>
+            <h2> Seed </h2>
+            <input name="seed" class="form-control" type="number" value="1"/>
+            <button type="submit" class="btn btn-primary">Run!</button>
+            <button id="randomSeed" class="btn btn-primary">Random Seed!</button>
+            <div class="form-check">
+              <input name="updown" class="form-check-input" type="checkbox"/>
+              <label class="form-check-label" for="updown">Check to Divide Up, Uncheck to Divide Down</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <hr class="my-4"/>
+      <div>
+        <form id="classForm" name="classForm">
+          <div>Class Name</div>
+          <input name="className" class="form-control" type="text" placeholder="Class Name"/>
+          <div>Group Size</div>
+          <input name="groupSize" class="form-control" type="number" value="4"/>
+          <div>Name List (Please seperate each name by a comma</div>
+          <textarea name="classList" class="form-control" placeholder="Name List, please separate names by commas"></textarea>
+          <button type="submit" class="btn btn-primary">Add Class!</button>
+        </form>
+      </div>
+      <hr class="my-4"/>
+      <div>
+        <p>Classes to be split into groups</p>
+        <p>Click on a class button to remove it from the app.</p>
+        <div class="classButtonHolder"></div>
+      </div>            
+    </div>
+  </section>
+
+
+  <!-- Random Generator Dump -->
+  <section class="generator-dump">
+    <div class="results">
+      <!-- Results will go here -->
+    </div>
+  </section>
+  
+</body>
+
+<script>
+
+(function() {
+  //Global vars!
+  var myClasses = [];
+  var seed = 1;
+  var seedCounter = seed;
+  var up = false;
+
+
+
+  //Edit this function for any number of groups you want to supply when you load the page.
+  function addStarterClasses(){
+
+    //Rosters arrays of names, edit as needed.
+    var tuth = [
+      "Allison Driver",
+      "Amy Schillerstorm",
+      "Ashley Hainesworth",
+      "Calle LaCouture",
+      "Cecillia Nelson",
+      "Chase Prichett",
+      "Chelsea McGovern",
+      "Evan Morrison",
+      "Guy Palmer",
+      "Ian Rutner",
+      "Ivan Saucedo",
+      "Jared Jones",
+      "Jenny Pennington",
+      "John Duck",
+      "John Zapata",
+      "Jose Ayala",
+      "Joseph Emswiler",
+      "Katrina Lewis",
+      "Maria Chitica",
+      "Matthew McCarthy",
+      "Michael Guillen",
+      "Monir Cederstrom",
+      "Navdeep Singh",
+      "Oluwasey Asoga",
+      "Pierce Morril",
+      "Rebecca Apo",
+      "Shane Padgett",
+      "Sugeesh Liyanage",
+      "Theresa Ponder",
+      "Wendy Kiddy"
+    ];
+
+    var mowe = [
+      "Alan Salinas",
+      "Alexander Rapstine",
+      "B Barnett",
+      "Brendan Carlson",
+      "Brian Steele",
+      "Chris Kim",
+      "Christopher Lara-Maya",
+      "Daniel Hayes",
+      "David Grenshaw",
+      "Destiny Miller",
+      "Dylan Glover",
+      "Emit Rosa",
+      "Evan Seaman",
+      "Fernando Stanford",
+      "Justin Lyan",
+      "Kellie Burt",
+      "Maeli Hector",
+      "Manual Martinez",
+      "Michael Hong",
+      "Molly Johnson",
+      "Paul Chenoweth",
+      "Ross Michie-Derrick",
+      "Ryan Bonner",
+      "Ryan Mullowney",
+      "Sam Hicks",
+      "Thomas Grando",
+      "Tim Gentel",
+      "Wayne Baylor",
+      "Xiaoyong 'Eric' Liang"
+    ];
+
+    
+    addClass("Tue-Thu Class", tuth, 4);
+    addClass("Mon-Wed Class", mowe, 4);
+    addClass("Test", ["Bob", "Johnson", "Billy"], 4);
+  }
+
+
+  addStarterClasses();
+
+
+  //==========================
+  //You should not need to edit the below code, but feel free to do so if you want.
+
+  //Function Definitions
+
+  function renderClassButtons() {
+    var btn, temp;
+    var div = document.querySelector(".classButtonHolder");
+    div.innerHTML = "";
+    for(var i=0; i<myClasses.length; ++i) {
+      btn = document.createElement("button");
+      btn.className = "classButton btn btn-primary";
+      btn.setAttribute("data-index", i);
+      btn.innerText = myClasses[i].name + " (" + myClasses[i].list.length + "/" + myClasses[i].groupSize + ")";
+      div.appendChild(btn);
+    }
+  }
+
+
+  function addClass(name, list, groupSize) {
+    var newClass={};
+    newClass.name=name;
+    newClass.list=list.slice();
+    newClass.groupSize = groupSize;
+    myClasses.push(newClass);
+    //console.log(newClass);
+    renderClassButtons();
+  }
+
+
+  function classSubmit(e) {
+    e.preventDefault();
+    //console.log(e);
+    var name, list, groupSize;
+    name = document.forms.classForm.className.value;
+    list =  document.forms.classForm.classList.value.trim().split(',');
+    groupSize = parseInt(document.forms.classForm.groupSize.value);
+    document.forms.classForm.className.value = "";
+    document.forms.classForm.classList.value = "";
+
+    list = list.reduce(function(acc, val){ 
+      var temp = val.trim(); 
+      if(temp !== "")
+        acc.push(temp);
+      return acc; 
+    }, []);
+
+    addClass(name, list, groupSize);
+  }
+
+
+  function myRandom() {
+      var x = Math.sin(seedCounter++) * 10000;
+      return x - Math.floor(x);
+  }
+
+
+  function helperAddGroup(div, counter, list, groupSize) {
+    var random, person, gDiv;
+    gDiv = document.createElement("div");
+    gDiv.className = "gDiv";
+    var temp = document.createElement("h4");
+    temp.innerText = "Group "+counter;
+    gDiv.appendChild(temp);
+    for(var i=0; i<groupSize; ++i){
+      random = Math.floor(myRandom()*list.length);
+      person = list[random];
+      list.splice(random,1);
+      temp = document.createElement("p");
+      temp.innerText=person
+      gDiv.appendChild(temp);
+    }
+    div.append(gDiv);
+  }
+
+
+  //Tries to divide the group into groupSize and groupSize-1 team sizes
+  //Automatically lowers group size if this is not possible
+  function divideDown(groupSize, list, className) {
+    var counter = 0;
+    var temp;
+
+    if(isNaN(groupSize) || groupSize < 0 || !list || list.length<2)
+      return;
+
+    while(groupSize>2 && list.length<=groupSize*groupSize-1)
+      --groupSize;
+
+    var newClass = document.createElement("div");
+    newClass.className = "clearfix";
+    temp = document.createElement("h2");
+    temp.innerText = className + " (Group size: " +groupSize+")";
+    newClass.appendChild(temp);
+
+    var remainder = list.length%groupSize;
+    var numSmaller = groupSize - remainder;
+    
+    if(remainder!=0)
+      while(numSmaller > 0) {
+        ++counter;
+        --numSmaller;
+        helperAddGroup(newClass, counter, list, groupSize-1);
+      }
+
+    //console.log(list.length);
+
+    while(list.length > 0) {
+      ++counter;
+      helperAddGroup(newClass, counter, list, groupSize);
+    }
+
+    document.querySelector(".results").appendChild(newClass);
+
+    console.log("People Left: " + list.length);
+
+    return list.length === 0;
+  }
+
+
+  //Tries to divide  the group into groupSize and groupSize+1 team sizes
+  //Automatically lowers the group size if this is not possible
+  function divideUp(groupSize, list, className) {
+    var counter = 0;
+    var temp;
+
+    if(isNaN(groupSize) || groupSize < 0 || !list || list.length<2)
+      return;
+
+    while(groupSize>1 && list.length<=groupSize*groupSize+1)
+      --groupSize;
+
+    var newClass = document.createElement("div");
+    newClass.className = "clearfix";
+    temp = document.createElement("h2");
+    temp.innerText = className + " (Group size: " +groupSize+")";
+    newClass.appendChild(temp);
+
+
+    var remainder = list.length%groupSize;
+
+    while(remainder > 0) {
+      ++counter;
+      --remainder;
+      helperAddGroup(newClass, counter, list, groupSize+1);
+    }
+
+    //console.log(list.length);
+
+    while(list.length>0) {
+      ++counter;
+      helperAddGroup(newClass, counter, list, groupSize);
+    }
+
+    document.querySelector(".results").appendChild(newClass);
+
+    console.log("People Left: " + list.length);
+
+    return list.length === 0;
+  }
+
+
+  function generateGroups() {
+    document.querySelector(".results").innerHTML = "";
+    for(var i=0; i<myClasses.length; ++i) {
+      //resets seedCounter to seed again, so each class that is divided generates from the same starting seed, so number of classes and order sohould not matter.
+      seedCounter=seed;
+      if(up)
+        divideUp(myClasses[i].groupSize, myClasses[i].list.slice(), myClasses[i].name);
+      else
+        divideDown(myClasses[i].groupSize, myClasses[i].list.slice(), myClasses[i].name);
+    }
+  }
+
+  //====================================
+  //Event bindings
+
+  document.querySelector("#seedForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var mySeed = parseInt(document.forms.seedForm.seed.value);
+    seed=mySeed;
+    up = document.forms.seedForm.updown.checked;
+    //console.log(document.forms.seedForm.updown.checked);
+    //console.log(mySeed);
+    generateGroups();
+  });
+
+
+  document.querySelector("#randomSeed").addEventListener("click", function(e){
+    e.preventDefault();
+    seed = Math.floor(Math.random()*1000000+1);
+    document.forms.seedForm.seed.value = seed;
+    up = document.forms.seedForm.updown.checked;
+    //console.log(seed);
+    generateGroups();
+  });
+
+
+  document.querySelector("#classForm").addEventListener("submit", classSubmit);
+
+
+  document.addEventListener("click", function(e){
+    //e.preventDefault();
+    if(e.target.classList.contains("classButton")) {
+      e.preventDefault();
+      var index = e.target.getAttribute("data-index");
+      myClasses.splice(index, 1);
+      renderClassButtons();
+    }
+  });
+
+  
+}());
+
+
+</script>
+</html>
