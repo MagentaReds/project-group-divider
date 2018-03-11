@@ -415,7 +415,7 @@
   function generateGroups() {
     document.querySelector(".results").innerHTML = "";
     for(var i=0; i<myClasses.length; ++i) {
-      //resets seedCounter to seed again, so each class that is divided generates from the same starting seed, so number of classes and order sohould not matter.
+      //resets seedCounter to seed again, so each class that is divided generates from the same starting seed, so number of classes and order should not matter.
       seedCounter=seed;
       if(up)
         divideUp(myClasses[i].groupSize, myClasses[i].list.slice(), myClasses[i].name);
@@ -429,8 +429,7 @@
 
   document.querySelector("#seedForm").addEventListener("submit", function(e){
     e.preventDefault();
-    var mySeed = parseInt(document.forms.seedForm.seed.value);
-    seed=mySeed;
+    seed = parseInt(document.forms.seedForm.seed.value);
     up = document.forms.seedForm.updown.checked;
     //console.log(document.forms.seedForm.updown.checked);
     //console.log(mySeed);
