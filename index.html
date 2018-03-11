@@ -246,6 +246,8 @@
     addClass("Tue-Thu Class", tuth, 4);
     addClass("Mon-Wed Class", mowe, 4);
     addClass("Test", ["Bob", "Johnson", "Billy"], 4);
+
+    seedSubmit();
   }
 
 
@@ -268,6 +270,7 @@
       btn.innerText = myClasses[i].name + " (" + myClasses[i].list.length + "/" + myClasses[i].groupSize + ")";
       div.appendChild(btn);
     }
+    generateGroups();
   }
 
 
@@ -300,6 +303,14 @@
     }, []);
 
     addClass(name, list, groupSize);
+  }
+
+  function seedSubmit() {
+    seed = parseInt(document.forms.seedForm.seed.value);
+    up = document.forms.seedForm.updown.checked;
+    //console.log(document.forms.seedForm.updown.checked);
+    //console.log(mySeed);
+    generateGroups();
   }
 
 
@@ -430,11 +441,7 @@
 
   document.querySelector("#seedForm").addEventListener("submit", function(e){
     e.preventDefault();
-    seed = parseInt(document.forms.seedForm.seed.value);
-    up = document.forms.seedForm.updown.checked;
-    //console.log(document.forms.seedForm.updown.checked);
-    //console.log(mySeed);
-    generateGroups();
+    seedSubmit();
   });
 
 
